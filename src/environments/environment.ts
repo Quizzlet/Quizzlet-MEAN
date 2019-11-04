@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  QuizzletAPI: 'http://localhost:3000/api'
+  QuizzletAPI: 'http://localhost:8080/api'
 };
 
 /*
