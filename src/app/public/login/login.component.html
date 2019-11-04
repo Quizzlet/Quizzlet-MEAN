@@ -1,0 +1,24 @@
+<div class="formContainer">
+  <form [formGroup]="loginForm" (submit)="onLogIn()">
+    <div class="form-group">
+      <label for="Email">Email Address</label>
+      <input type="email"
+             class="form-control form-control-lg"
+             id="Email"
+             placeholder="A00000000@itesm.mx"
+             formControlName="Email">
+    </div>
+    <div class="form-group">
+      <label for="Password">Password</label>
+      <input type="password"
+             class="form-control form-control-lg"
+             id="Password"
+             formControlName="Password">
+    </div>
+    <div class="Links">
+      <button type="submit" class="btn btn-primary">Log In</button>
+      <a routerLink="/Singup">Sing Up</a>
+    </div>
+  </form>
+  <app-alert *ngIf="boolShow" [strMessage]="strMessage" [strType]="strType"></app-alert>
+</div>
