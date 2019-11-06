@@ -4,7 +4,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {PrivateComponent} from './component/private.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/Home', pathMatch: 'full' },
   { path: 'Home', component: PrivateComponent }
 ];
 
