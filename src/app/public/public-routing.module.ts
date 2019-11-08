@@ -5,9 +5,9 @@ import {SingUpComponent} from './sing-up/sing-up.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: '/Login', pathMatch: 'full' },
-  { path: 'Login', component: LoginComponent },
-  { path: 'Singup', component: SingUpComponent}
+      { path: '', redirectTo: 'Login', pathMatch: 'full'},
+      { path: 'Login', component: LoginComponent },
+      { path: 'Singup', component: SingUpComponent}
 ];
 
 @NgModule({
