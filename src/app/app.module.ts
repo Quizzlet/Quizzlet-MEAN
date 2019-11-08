@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {PublicModule} from './public/public.module';
-import {PrivateModule} from './private/private.module';
+import {PrivateGuard} from './private.guard';
+import {PublicGuard} from './public.guard';
 
 @NgModule({
   declarations: [
@@ -13,10 +13,8 @@ import {PrivateModule} from './private/private.module';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    PublicModule,
-    PrivateModule
   ],
-  providers: [],
+  providers: [PrivateGuard, PublicGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

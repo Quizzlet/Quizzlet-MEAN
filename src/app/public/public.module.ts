@@ -7,15 +7,11 @@ import {UsersService} from '../service/users.service';
 import {HttpClientModule} from '@angular/common/http';
 import {SharedModule} from '../shared/shared.module';
 import { SingUpComponent } from './sing-up/sing-up.component';
-import { PublicComponent } from './component/public.component';
-
-
 
 @NgModule({
   declarations: [
     LoginComponent,
-    SingUpComponent,
-    PublicComponent
+    SingUpComponent
   ],
   imports: [
     CommonModule,
