@@ -42,12 +42,9 @@ app.use('/api/users', userRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/subjects', subjectRoutes);
 app.use('/api/quizzes', quizRoutes);
+
 //Angular
-/*var distDir = __dirname + "/dist/";
+var distDir = __dirname + "/dist/";
 app.use(express.static(distDir));
 
-app.get('/!*', function(req, res) {
-    res.sendFile(path.join(__dirname + '/dist/index.html'));
-});*/
-
- module.exports = app;
+module.exports = app;
