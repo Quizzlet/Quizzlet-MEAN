@@ -24,7 +24,7 @@ const quizRoutes = require('./routes/QuizRoutes');
 
 //Set headers for the requests
 //----------------------------------------------------------
-app.use((req, res, next) => {
+/*app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader(
         'Access-Control-Allow-Headers',
@@ -35,7 +35,7 @@ app.use((req, res, next) => {
         'GET, POST, PUT, PATCH, DELETE, OPTIONS'
     );
     next();
-});
+});*/
 
 //Routes to use
 app.use('/api/users', userRoutes);
