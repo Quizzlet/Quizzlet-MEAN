@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
       this.loginForm.value.Password
     ).subscribe((data) => {
       localStorage.setItem('User', JSON.stringify(data));
-      this.router.navigate(['/private/Home']);
+      this.router.navigate(['/private/Home/Groups']);
     }, (error) => {
       this.strMessage = error.error.message;
       this.strType = 'danger';

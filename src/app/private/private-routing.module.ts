@@ -9,7 +9,7 @@ import {GroupsComponent} from './component/groups/groups.component';
 
 const routes: Routes = [
   { path: 'Home', component: PrivateComponent, children: [
-      { path: '', redirectTo: '/Questions', pathMatch: 'full' },
+      { path: '', redirectTo: 'Groups', pathMatch: 'full' },
       { path: 'Questions', component: QuestionsComponent},
       { path: 'Quizzes', component: QuizzesComponent },
       { path: 'Subjects', component: SubjectsComponent },
