@@ -134,19 +134,16 @@ router.delete('/delete', checkAuth, function (req, res, next) {
                     });
                 });
             });
-            console.log(fetchQuiz);
             return res.status(200).json({
                 message: "question deleted successfully"
             });
         }).catch((error) => {
-            console.log(error);
             return res.status(500).json({
                 message: error
             });
         });
 
     }).catch((error) => {
-        console.log(error);
         return res.status(500).json({
             message: error
         });

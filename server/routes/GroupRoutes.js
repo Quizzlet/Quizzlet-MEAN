@@ -18,6 +18,23 @@ router.get('', checkAuth, function (req, res, next) {
     });
 });
 
+//get groups Im part of
+//----------------------------------------------------------
+router.get('/Mine', checkAuth, function (req, res, next) {
+    Group.find({
+        strParticipants: {
+            $all: [req.userData.strMatricula]
+        },
+        strIdCreator: { $ne: req.userData.strMatricula}
+    }).then((result) => {
+        return res.status(200).json(result);
+    }).catch((error) => {
+        return res.status(500).json({
+            message: "you cannot be part of a group you created"
+        });
+    })
+});
+
 //----------------------------------------------------------
 router.delete('/delete', checkAuth, function (req, res, next) {
     if(!req.body.strGrpKey) {
