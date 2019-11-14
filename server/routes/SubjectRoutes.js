@@ -54,7 +54,6 @@ router.get('/:id', checkAuth, function (req, res, next) {
 
    Subject.findOne({
        _id: req.params.id,
-       strIdCreator: req.userData.strMatricula
    }).then((result) => {
        return res.status(200).json(result);
    }).catch((error) => {
@@ -122,7 +121,7 @@ router.post('/addQuiz', checkAuth, function(req, res, next) {
 
 /* Remove a quiz from a subject */
 //----------------------------------------------------------
-router.post('/removePost', checkAuth, (req, res, next) => {
+router.post('/removeQuiz', checkAuth, (req, res, next) => {
     if(!req.body.strIdSubject || !req.body.strIdQuiz) {
         return res.status(404).json({
             message: "missing a field"
@@ -151,7 +150,8 @@ router.post('/removePost', checkAuth, (req, res, next) => {
                 });
             } else {
                 //update the subject
-                let index = fetchSubject.splice(index, 1);
+                let index = fetchSubject.arrQuizzes.indexOf(fetchQuiz._id);
+                fetchSubject.arrQuizzes.splice(index, 1);
                 Subject.findByIdAndUpdate(
                     {_id: fetchQuiz._id},
                     fetchSubject

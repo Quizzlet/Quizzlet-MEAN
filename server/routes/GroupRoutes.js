@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const Group = require('../models/group');
+const Subject = require('../models/subject');
 const checkAuth = require('../middleware/check-auth');
 
 //get user's created groups
@@ -16,6 +17,26 @@ router.get('', checkAuth, function (req, res, next) {
             error: error
         });
     });
+});
+
+//get details of a certain group
+//----------------------------------------------------------
+router.get('/:id', checkAuth, function (req, res, next) {
+    if(!req.params.id) {
+        return res.status(400).json({
+            message: "no group was provided"
+        });
+    }
+
+    Group.findOne({
+        _id: req.params.id
+    }).then((result) => {
+        return res.status(200).json(result);
+    }).catch((error) => {
+        return res.status(404).json({
+            message: "no group was found"
+        });
+    })
 });
 
 //get groups Im part of
@@ -143,6 +164,118 @@ router.put('/join', checkAuth,(req, res, next) => {
             message: error
         });
     });
+});
+
+/* Add subject to group */
+//----------------------------------------------------------
+router.post('/addSubject', checkAuth, function (req, res, next) {
+    if(!req.body.strIdGroup || !req.body.strIdSubject) {
+        return res.status(404).json({
+            message: "missing a field"
+        });
+    }
+
+    let fetchSubject, fetchGroup;
+    //search for the subject
+    Subject.findOne({
+        _id: req.body.strIdSubject,
+        strIdCreator: req.userData.strMatricula
+    }).then((result) => {
+        fetchSubject = result;
+        //Search for the group
+        Group.findOne({
+            _id: req.body.strIdGroup,
+            strIdCreator: req.userData.strMatricula
+        }).then((result) => {
+            fetchGroup = result;
+            if(
+                fetchGroup.strSubjects.includes(fetchSubject._id)
+            ) {
+                return res.status(400).json({
+                    message: "the subject is already part of the group"
+                });
+            } else {
+                //update the group
+                fetchGroup.strSubjects.push(fetchSubject._id);
+                Group.findByIdAndUpdate(
+                    {_id: fetchGroup._id},
+                    fetchGroup
+                ).then((result) => {
+                    return res.status(200).json({
+                        message: "subject was added to the group"
+                    });
+                }).catch((error) => {
+                    return res.status(500).json({
+                        message: error
+                    });
+                });
+            }
+        }).catch((error) => {
+            return res.status(404).json({
+                message: "no group was found"
+            });
+        })
+    }).catch((error) => {
+        return res.status(404).json({
+            message: "no subject was found"
+        });
+    })
+});
+
+/* Remove a subject from a group */
+//----------------------------------------------------------
+router.post('/removeSubject', checkAuth, (req, res, next) => {
+    if(!req.body.strIdGroup || !req.body.strIdSubject) {
+        return res.status(404).json({
+            message: "missing a field"
+        });
+    }
+
+    let fetchSubject, fetchGroup;
+    //search for the subject
+    Subject.findOneAndDelete({
+        _id: req.body.strIdSubject,
+        strIdCreator: req.userData.strMatricula
+    }).then((result) => {
+        fetchSubject = result;
+        Group.findOne({
+            _id: req.body.strIdGroup,
+            strIdCreator: req.userData.strMatricula
+        }).then((result) => {
+            fetchSubject = result;
+            if(
+                !fetchGroup.strSubjects.includes(fetchSubject._id)
+            ) {
+                return res.status(400).json({
+                    message: "the subject is not part of the group"
+                });
+            } else {
+                //update the group
+                let index = fetchGroup.strSubjects.indexOf(fetchSubject._id);
+                fetchGroup.strSubjects.splice(index,1);
+                Group.findByIdAndUpdate(
+                    {_id: fetchGroup._id},
+                    fetchGroup
+                ).then((result) => {
+                    return res.status(200).json({
+                        message: "subject remove from group"
+                    });
+                }).catch((error) => {
+                    return res.status(500).json({
+                        message: error
+                    });
+                });
+            }
+        }).catch((error) => {
+            return res.status(404).json({
+                message: "no group found"
+            });
+        })
+    }).catch((error) => {
+        return res.status(404).json({
+            message: "no subject was found"
+        });
+    })
 });
 
 module.exports = router;
