@@ -56,7 +56,6 @@ router.get('/:id', checkAuth, function(req, res, next) {
 
     Question.findOne({
         _id: req.params.id,
-        strIdCreator: req.userData.strMatricula
     }).then((result) => {
         return res.status(200).json(result);
     }).catch((error) => {
