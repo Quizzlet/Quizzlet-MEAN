@@ -19,26 +19,6 @@ router.get('', checkAuth, function (req, res, next) {
     });
 });
 
-//get details of a certain group
-//----------------------------------------------------------
-router.get('/:id', checkAuth, function (req, res, next) {
-    if(!req.params.id) {
-        return res.status(400).json({
-            message: "no group was provided"
-        });
-    }
-
-    Group.findOne({
-        _id: req.params.id
-    }).then((result) => {
-        return res.status(200).json(result);
-    }).catch((error) => {
-        return res.status(404).json({
-            message: "no group was found"
-        });
-    })
-});
-
 //get groups Im part of
 //----------------------------------------------------------
 router.get('/Mine', checkAuth, function (req, res, next) {
@@ -52,6 +32,45 @@ router.get('/Mine', checkAuth, function (req, res, next) {
     }).catch((error) => {
         return res.status(500).json({
             message: "you cannot be part of a group you created"
+        });
+    })
+});
+
+//get details of a certain group
+//----------------------------------------------------------
+router.get('/:id', checkAuth, function (req, res, next) {
+    if(!req.params.id) {
+        return res.status(400).json({
+            message: "no group was provided"
+        });
+    }
+
+    //to store the data that we are going to send back
+    let resultGroup;
+    Group.findOne({
+        _id: req.params.id
+    }).then((result) => {
+        // to store the fetch group
+        let fetchGroup = result;
+        //enter the info
+        resultGroup = {
+            _id: result._id,
+            strName: result.strName,
+            strSubjects: []
+        };
+
+        //itarate of the fetch group to see details of subjects
+        fetchGroup.strSubjects.forEach((doc, index) => {
+            Subject.findOne({_id: doc}).select('strName').then((result) => {
+                resultGroup.strSubjects.push(result);
+                if(index + 1 === fetchGroup.strSubjects.length) {
+                    return res.status(200).json(resultGroup);
+                }
+            });
+        });
+    }).catch((error) => {
+        return res.status(404).json({
+            message: "no group was found"
         });
     })
 });

@@ -52,10 +52,29 @@ router.get('/:id', checkAuth, function (req, res, next) {
        });
    }
 
+   //to store the data that we are going to send back
+   let resultSubject;
    Subject.findOne({
        _id: req.params.id,
    }).then((result) => {
-       return res.status(200).json(result);
+       //to store the fetch subject
+       let fetchSubject = result;
+       //enter the info
+       resultSubject = {
+           _id: result._id,
+           strName: result.strName,
+           arrQuizzes: []
+       };
+
+       //iterate of the fetch subjects to see details of the quizzes
+       fetchSubject.arrQuizzes.forEach((doc, index) => {
+           Quiz.findOne({_id: doc}).select('strName').then((result) => {
+               resultSubject.arrQuizzes.push(result);
+               if(index + 1 === fetchSubject.arrQuizzes.length) {
+                   return res.status(200).json(resultSubject);
+               }
+           });
+       });
    }).catch((error) => {
        return res.status(404).json({
            message: "no subject was found"
