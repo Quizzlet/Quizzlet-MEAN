@@ -1,12 +1,26 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar fixed-top navbar-expand-md navbar-light bg-light">
     <a class="navbar-brand" href="#">Quizzlet</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" routerLink="/private/Home/Groups">Groups</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" routerLink="/private/Home/Subjects">Subjects</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" routerLink="/private/Home/Quizzes">Quizzes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" routerLink="/private/Home/Questions">Questions</a>
+            </li>
+        </ul>
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" (click)="LogOut()">Log out</a>
             </li>
         </ul>
