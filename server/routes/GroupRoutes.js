@@ -4,6 +4,7 @@ const router = express.Router();
 
 const Group = require('../models/group');
 const Subject = require('../models/subject');
+const Grade = require('../models/grade');
 const checkAuth = require('../middleware/check-auth');
 
 //get user's created groups
@@ -59,13 +60,27 @@ router.get('/:id', checkAuth, function (req, res, next) {
             strSubjects: []
         };
 
+        let fetchSubject;
         //itarate of the fetch group to see details of subjects
         fetchGroup.strSubjects.forEach((doc, index) => {
-            Subject.findOne({_id: doc}).select('strName').then((result) => {
-                resultGroup.strSubjects.push(result);
-                if(index + 1 === fetchGroup.strSubjects.length) {
-                    return res.status(200).json(resultGroup);
-                }
+            Subject.findOne({_id: doc}).select('strName arrQuizzes').then((result) => {
+                fetchSubject = result;
+                Grade.find({
+                    strIdGroup: fetchGroup._id,
+                    strIdSubject: fetchSubject._id,
+                    strIdUser: req.userData.strMatricula
+                }).count().then((result) => {
+                    let percentage = (result * 100) / fetchSubject.arrQuizzes.length
+                    obj = {
+                        strName: fetchSubject.strName,
+                        _id: fetchSubject._id,
+                        intCompleted: percentage
+                    }
+                    resultGroup.strSubjects.push(obj);
+                    if(resultGroup.strSubjects.length === fetchGroup.strSubjects.length) {
+                        return res.status(200).json(resultGroup);
+                    }
+                });
             });
         });
     }).catch((error) => {

@@ -70,7 +70,7 @@ router.get('/:id', checkAuth, function (req, res, next) {
        fetchSubject.arrQuizzes.forEach((doc, index) => {
            Quiz.findOne({_id: doc}).select('strName').then((result) => {
                resultSubject.arrQuizzes.push(result);
-               if(index + 1 === fetchSubject.arrQuizzes.length) {
+               if(resultSubject.arrQuizzes.length === fetchSubject.arrQuizzes.length) {
                    return res.status(200).json(resultSubject);
                }
            });
