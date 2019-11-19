@@ -5,7 +5,6 @@ const router = express.Router();
 const Subject = require('../models/subject');
 const Quiz = require('../models/quiz');
 const Group = require('../models/group');
-const Grade = require('../models/grade');
 const checkAuth = require('../middleware/check-auth');
 
 //----------------------------------------------------------
@@ -64,8 +63,7 @@ router.get('/:id', checkAuth, function (req, res, next) {
        resultSubject = {
            _id: result._id,
            strName: result.strName,
-           arrQuizzes: [],
-           intCompleted: 0
+           arrQuizzes: []
        };
 
        //iterate of the fetch subjects to see details of the quizzes
@@ -73,14 +71,7 @@ router.get('/:id', checkAuth, function (req, res, next) {
            Quiz.findOne({_id: doc}).select('strName').then((result) => {
                resultSubject.arrQuizzes.push(result);
                if(resultSubject.arrQuizzes.length === fetchSubject.arrQuizzes.length) {
-                   Grade.find({
-                       strIdSubject: resultSubject._id,
-                       strIdUser: req.userData.strMatricula
-                   }).count().then((result) => {
-                       percentage = (result * 100) / resultSubject.arrQuizzes.length;
-                       resultSubject.intCompleted = percentage;
-                       return res.status(200).json(resultSubject);
-                   });
+                   return res.status(200).json(resultSubject);
                }
            });
        });
