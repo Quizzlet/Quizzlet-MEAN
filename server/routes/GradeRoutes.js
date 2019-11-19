@@ -73,41 +73,20 @@ router.post('/addGrade', checkAuth, function (req, res, next) {
                     strIdUser: newGrade.strIdUser
                 }).then((resultGrade) => {
 
-                    if(resultGrade.intGrade <= newGrade.intGrade) {
+                    if(newGrade.intGrade >= resultGrade.intGrade) {
+                        //update the grade
                         Grade.findByIdAndUpdate(
                             {_id: resultGrade._id},
                             newGrade
                         ).then((result) => {
-                            Grade.find({
-                                strIdGroup: newGrade.strIdGroup,
-                                strIdSubject: newGrade.strIdSubject,
-                                strIdQuiz: newGrade.strIdQuiz
-                            }).sort({intGrade: 'asc'}).limit(5)
-                                .then((result) => {
-                                return res.status(200).json(result);
-                            });
+                            TopFive(newGrade, res);
                         });
                     } else {
-                        Grade.find({
-                            strIdGroup: newGrade.strIdGroup,
-                            strIdSubject: newGrade.strIdSubject,
-                            strIdQuiz: newGrade.strIdQuiz
-                        }).sort({intGrade: 'asc'}).limit(5)
-                            .then((result) => {
-                                return res.status(200).json(result);
-                            });
+                        //Get the table of the highest tree
+                        TopFive(newGrade, res);
                     }
                 }).catch((error) => {
-                    Grade.create(newGrade).then((result) => {
-                        Grade.find({
-                            strIdGroup: newGrade.strIdGroup,
-                            strIdSubject: newGrade.strIdSubject,
-                            strIdQuiz: newGrade.strIdQuiz
-                        }).sort({intGrade: 'asc'}).limit(5)
-                            .then((result) => {
-                            return res.status(200).json(result);
-                        });
-                    });
+                    TopFive(newGrade, res);
                 });
             }).catch((error) => {
                 return res.status(400).json({
@@ -125,5 +104,22 @@ router.post('/addGrade', checkAuth, function (req, res, next) {
         });
     })
 });
+
+//Get the top five
+//----------------------------------------------------------
+function TopFive(
+    newGrade,
+    res
+) {
+    //Get the table of the highest tree
+    Grade.find({
+        strIdGroup: newGrade.strIdGroup,
+        strIdSubject: newGrade.strIdSubject,
+        strIdQuiz: newGrade.strIdQuiz
+    }).sort({intGrade: 'asc'}).limit(5)
+        .then((result) => {
+            return res.status(200).json(result);
+        });
+}
 
 module.exports = router;
