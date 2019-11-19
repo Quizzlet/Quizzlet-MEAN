@@ -6,6 +6,7 @@ const Grade = require('../models/grade');
 const Group = require('../models/group');
 const Subject = require('../models/subject');
 const Quiz = require('../models/quiz');
+const User = require('../models/user');
 const checkAuth = require('../middleware/check-auth');
 
 //add a user score
@@ -66,27 +67,31 @@ router.post('/addGrade', checkAuth, function (req, res, next) {
 
                 //find the grade, if if we find one, we update,
                 //      if not, we create a new one
+                let  oldGrade;
                 Grade.findOne({
                     strIdGroup: newGrade.strIdGroup,
                     strIdSubject: newGrade.strIdSubject,
                     strIdQuiz: newGrade.strIdQuiz,
                     strIdUser: newGrade.strIdUser
                 }).then((resultGrade) => {
-
-                    if(newGrade.intGrade >= resultGrade.intGrade) {
-                        //update the grade
+                    oldGrade = resultGrade;
+                    if(Number(newGrade.intGrade) >= Number(oldGrade.intGrade)) {
                         Grade.findByIdAndUpdate(
-                            {_id: resultGrade._id},
+                            {_id: oldGrade._id},
                             newGrade
                         ).then((result) => {
+                            console.log('update');
                             TopFive(newGrade, res);
                         });
                     } else {
-                        //Get the table of the highest tree
+                        console.log('no update');
                         TopFive(newGrade, res);
                     }
                 }).catch((error) => {
-                    TopFive(newGrade, res);
+                    console.log('insertion')
+                    Grade.create(newGrade).then((result) => {
+                       TopFive(newGrade, res);
+                    });
                 });
             }).catch((error) => {
                 return res.status(400).json({
@@ -111,14 +116,29 @@ function TopFive(
     newGrade,
     res
 ) {
+    let TopFiveResult = [];
+    let fetchFiveResult = [];
     //Get the table of the highest tree
     Grade.find({
         strIdGroup: newGrade.strIdGroup,
         strIdSubject: newGrade.strIdSubject,
         strIdQuiz: newGrade.strIdQuiz
     }).sort({intGrade: 'asc'}).limit(5)
-        .then((result) => {
-            return res.status(200).json(result);
+        .then((resultFind) => {
+            fetchFiveResult = resultFind;
+            fetchFiveResult.forEach((doc) => {
+                User.findOne({
+                    strMatricula: doc.strIdUser
+                }).select('strName').then((result) => {
+                   TopFiveResult.push({
+                       strName: result.strName,
+                       intGrade: doc.intGrade
+                   });
+                   if(TopFiveResult.length  === fetchFiveResult.length) {
+                       return res.status(200).json(TopFiveResult);
+                   }
+                });
+            });
         });
 }
 
