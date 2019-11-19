@@ -21,7 +21,8 @@ const userRoutes = require('./routes/UserRoutes');
 const groupRoutes = require('./routes/GroupRoutes');
 const subjectRoutes = require('./routes/SubjectRoutes');
 const quizRoutes = require('./routes/QuizRoutes');
-const questionRoues = require('./routes/QuestionRoutes');
+const questionRoutes = require('./routes/QuestionRoutes');
+const gradeRoutes = require('./routes/GradeRoutes');
 
 //Set headers for the requests
 //----------------------------------------------------------
@@ -38,7 +39,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/subjects', subjectRoutes);
 app.use('/api/quizzes', quizRoutes);
-app.use('/api/questions', questionRoues);
+app.use('/api/questions', questionRoutes);
+app.use('/api/grades', gradeRoutes);
 
 //Angular
 var distDir = __dirname + "/dist/";
