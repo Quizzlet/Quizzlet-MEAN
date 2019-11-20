@@ -20,25 +20,27 @@ router.post('/LogIn', function (req, res) {
       }
 
       fetchedUser = user;
-      //check if the stored hash matches the password
-      if( !bcrypt.compare(
+
+      bcrypt.compare(
           req.body.strPassword,
           user.strPassword
-      )){
-        return res.status(402).json({
-          message: "password does not match"
-        });
-      }
-      //create the JSON WEB TOKEN
-      const token = jwt.sign({
-        strMatricula: fetchedUser.strMatricula,
-        strName: fetchedUser.strName
-      }, process.env.JWT_KEY, {expiresIn: '3day'});
+      ).then((result) => {
+          if(!result) {
+              return res.status(402).json({
+                  message: "password does not match"
+              });
+          }
+          //create the JSON WEB TOKEN
+          const token = jwt.sign({
+              strMatricula: fetchedUser.strMatricula,
+              strName: fetchedUser.strName
+          }, process.env.JWT_KEY, {expiresIn: '3day'});
 
-      return res.status(200).json({
-        token: token,
-        strName: fetchedUser.strName,
-        strMatricula: fetchedUser.strMatricula
+          return res.status(200).json({
+              token: token,
+              strName: fetchedUser.strName,
+              strMatricula: fetchedUser.strMatricula
+          });
       });
     }).catch((error) => {
       return res.status(500).json({
