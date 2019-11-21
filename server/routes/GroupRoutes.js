@@ -63,19 +63,21 @@ router.get('/:id', checkAuth, function (req, res, next) {
         let fetchSubject;
         //itarate of the fetch group to see details of subjects
         fetchGroup.strSubjects.forEach((doc, index) => {
+            let obj;
             Subject.findOne({_id: doc}).select('strName arrQuizzes').then((result) => {
                 fetchSubject = result;
+                obj = {
+                    strName: fetchSubject.strName,
+                    _id: fetchSubject._id,
+                    intCompleted: 0
+                }
                 Grade.find({
                     strIdGroup: fetchGroup._id,
                     strIdSubject: fetchSubject._id,
                     strIdUser: req.userData.strMatricula
                 }).count().then((result) => {
-                    let percentage = (result * 100) / fetchSubject.arrQuizzes.length
-                    obj = {
-                        strName: fetchSubject.strName,
-                        _id: fetchSubject._id,
-                        intCompleted: percentage
-                    }
+                    let percentage = (result * 100) / fetchSubject.arrQuizzes.length;
+                    obj.intCompleted = percentage;
                     resultGroup.strSubjects.push(obj);
                     if(resultGroup.strSubjects.length === fetchGroup.strSubjects.length) {
                         return res.status(200).json(resultGroup);
