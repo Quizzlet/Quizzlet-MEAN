@@ -28,7 +28,7 @@ router.get('/Mine', checkAuth, function (req, res, next) {
             $all: [req.userData.strMatricula]
         },
         strIdCreator: { $ne: req.userData.strMatricula}
-    }).then((result) => {
+    }).select('strName').then((result) => {
         return res.status(200).json(result);
     }).catch((error) => {
         return res.status(500).json({
