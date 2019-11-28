@@ -8,8 +8,9 @@ app.use(morgan('dev'));
 app.use(bodyParser.json()); //to decode the jsons from the bodys
 app.use(bodyParser.urlencoded({ extend: false}));
 
+const Database = process.env.MONGO_ATLAS || "mongodb://localhost/Quizzlet";
 //connection to mongoDB
-mongoose.connect('mongodb+srv://admin:'+ process.env.MONGO_ATLAS_PW +'@quizzlet-adxqe.mongodb.net/Quizzlet')
+mongoose.connect(Database)
     .then(() => {
         console.log('Connected to our database');
     }).catch(() => {
